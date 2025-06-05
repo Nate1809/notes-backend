@@ -5,6 +5,7 @@ const app = express()
 //Middleware
 app.use(express.json()) //Allow JSON parsing
 app.use(cors()) //Allow cross-origin requests
+app.use(express.static('dist'))
 
 //Logger middleware
 const requestLogger = (request, response, next) => {
