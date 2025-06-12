@@ -1,0 +1,3 @@
+### GET request to example server
+GET http://localhost:3001/api/notes/684865500576bceea77b1b45
+###
