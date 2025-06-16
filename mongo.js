@@ -1,41 +1,51 @@
 const mongoose = require('mongoose')
+const logger = require('./utils/logger')
 
-if (process.argv.length < 3) {
-    console.log('give password as argument')
-    process.exit(1)
-}
+const url = process.env.TEST_MONGODB_URI
 
-const password = process.argv[2]
+logger.info('connecting to', url)
 
-const url = `mongodb+srv://galloguzman:${password}@cluster0.uvkto3w.mongodb.net/noteApp?retryWrites=true&w=majority&appName=Cluster0`
-
-mongoose.set('strictQuery',false)
-
-mongoose.connect(url)
+mongoose
+  .connect(url)
+  .then(() => {
+    logger.info('connected to MongoDB')
+  })
+  .catch((error) => {
+    logger.error('error connection to MongoDB:', error.message)
+  })
 
 const noteSchema = new mongoose.Schema({
-    content: String,
-    important: Boolean,
+  content: String,
+  important: Boolean,
 })
 
 const Note = mongoose.model('Note', noteSchema)
 
-// //create new note
-//
-// const note = new Note({
-//     content: 'Today is Monday',
-//     important: false,
-// })
-//
-// note.save().then(result => {
-//     console.log('note saved!')
-//     mongoose.connection.close()
-// })
+//create new notes
+
+const note = new Note({
+  content: 'Today is Monday',
+  important: false,
+})
+
+note.save().then(result => {
+  console.log('note saved!')
+})
+
+const note2 = new Note({
+  content: 'We love Pingu',
+  important: true,
+})
+
+note2.save().then(result => {
+  console.log('note saved!')
+  mongoose.connection.close()
+})
 
 // fetch objects from database
-Note.find({}).then(result => {
-    result.forEach(note => {
-        console.log(note)
-    })
-    mongoose.connection.close()
-})
+// Note.find({}).then(result => {
+//   result.forEach(note => {
+//     console.log(note)
+//   })
+//   mongoose.connection.close()
+// })
